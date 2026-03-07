@@ -1,6 +1,6 @@
-# Guia de Instalação do Fluxo Prod (Com Backup)
+# Guia de Instalação do Gestão GOR (Com Backup)
 
-Este guia descreve o passo a passo para instalar e rodar a aplicação "Fluxo Prod" em uma máquina limpa, restaurando os dados do backup.
+Este guia descreve o passo a passo para instalar e rodar a aplicação "Gestão GOR" em uma máquina limpa, restaurando os dados do backup.
 
 ## Pré-requisitos
 
@@ -21,15 +21,15 @@ Antes de começar, certifique-se de que você tem instalado:
 Abra o terminal (PowerShell ou Git Bash) e clone o repositório:
 
 ```bash
-git clone https://github.com/samukadias/fluxoProd.git
-cd fluxoProd
+git clone https://github.com/samukadias/gestaogor.git
+cd gestaogor
 ```
 
 ---
 
 ## 2. Configurar o Banco de Dados (Restaurar Backup)
 
-**IMPORTANTE**: Copie o arquivo `full_backup.sql` que foi gerado na máquina original para a pasta `fluxoProd` da nova máquina.
+**IMPORTANTE**: Copie o arquivo `full_backup.sql` que foi gerado na máquina original para a pasta `gestaogor` da nova máquina.
 
 1.  Abra o **pgAdmin** ou terminal `psql`.
 2.  Crie o banco de dados:
@@ -77,7 +77,7 @@ Isso criará todas as tabelas e usuários automaticamente!
 
 ## 4. Configurar o Frontend (Interface)
 
-1.  Abra um **novo terminal** na raiz (`fluxoProd`).
+1.  Abra um **novo terminal** na raiz (`gestaogor`).
 2.  Instale e rode:
     ```bash
     npm install

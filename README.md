@@ -1,4 +1,4 @@
-# FluxoProd - Sistema de Gestão de Demandas
+# Gestão GOR - Sistema de Gestão de Demandas
 
 Sistema de gestão de demandas (CDPC/CVAC) com dashboard interativo, controle de etapas e SLA.
 
@@ -18,8 +18,8 @@ Sistema de gestão de demandas (CDPC/CVAC) com dashboard interativo, controle de
 
 1. **Clone o repositório**
    ```bash
-   git clone https://github.com/samukadias/fluxoProd.git
-   cd fluxoProd
+   git clone https://github.com/samukadias/gestaogor.git
+   cd gestaogor
    ```
 
 2. **Instale as dependências**

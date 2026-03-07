@@ -1,4 +1,4 @@
-# 📊 Análise Completa do Sistema FluxoProd
+# 📊 Análise Completa do Sistema Gestão GOR
 
 **Data:** 01/02/2026  
 **Status:** Em Produção
@@ -138,7 +138,7 @@ Home > COCR > Contratos > Editar #123
 
 **Solução:** Remover referências a `DeadlineContract` do código.
 
-### 7. Renomear Aplicação (fluxoProd → GestaoGOR)
+### 7. Renomear Aplicação (fluxoProd → GestaoGOR) - CONCLUÍDO
 
 **Detalhes:**
 - A aplicação amadureceu e o novo nome reflete melhor o seu escopo atual.
@@ -198,10 +198,10 @@ Client → Visualização limitada
 
 ```bash
 # Verificar erros no console
-docker logs fluxo_prod_server -f
+docker logs gestaogor_server -f
 
 # Acessar banco de dados
-docker exec -it fluxo_prod_db psql -U admin -d fluxo_prod
+docker exec -it gestaogor_db psql -U admin -d fluxo_prod
 
 # Rebuild após mudanças
 docker-compose down && docker-compose up --build

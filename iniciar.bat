@@ -1,20 +1,20 @@
 @echo off
-title FluxoProd - Iniciando...
+title Gestão GOR - Iniciando...
 
 echo ============================================
-echo   FluxoProd - Iniciando Aplicacao
+echo   Gestão GOR - Iniciando Aplicacao
 echo ============================================
 echo.
 
 set "APP_DIR=%~dp0"
 
 echo [1/2] Iniciando Backend (porta 3000)...
-start "FluxoProd - Backend" cmd /k "cd /d "%APP_DIR%server" && node index.js"
+start "GestaoGOR - Backend" cmd /k "cd /d "%APP_DIR%server" && node index.js"
 
 timeout /t 3 /nobreak >nul
 
 echo [2/2] Iniciando Frontend (porta 5173)...
-start "FluxoProd - Frontend" cmd /k "cd /d "%APP_DIR%" && npm run dev"
+start "GestaoGOR - Frontend" cmd /k "cd /d "%APP_DIR%" && npm run dev"
 
 echo.
 echo ============================================

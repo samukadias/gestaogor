@@ -1,5 +1,5 @@
-$taskName = "FluxoProd_AutoStart"
-$scriptPath = "C:\Users\153758\.gemini\antigravity\scratch\fluxoProd-main\start_service.bat"
+$taskName = "GestaoGor_AutoStart"
+$scriptPath = "$($PWD.Path)\start_service.bat"
 
 # Cria a acao (executar o batch)
 $Action = New-ScheduledTaskAction -Execute "cmd.exe" -Argument "/c $scriptPath"

@@ -1,5 +1,5 @@
-$startupPath = "C:\Users\153758\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup"
-$filesToDelete = @("FluxoProd_AutoStart.vbs", "FluxoProd.lnk")
+$startupPath = "$env:APPDATA\Microsoft\Windows\Start Menu\Programs\Startup"
+$filesToDelete = @("GestaoGor_AutoStart.vbs", "GestaoGOR.lnk")
 
 foreach ($file in $filesToDelete) {
     if (Test-Path "$startupPath\$file") {

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * Script de Migração: Supabase → FluxoProd
+ * Script de Migração: Supabase → Gestão GOR
  * 
  * Exporta contratos COCR do Supabase e importa no sistema local.
  * 
@@ -151,7 +151,7 @@ async function importToFluxo(contracts) {
 
 async function main() {
     console.log('╔════════════════════════════════════════════════════════╗');
-    console.log('║   MIGRAÇÃO SUPABASE → FLUXOPROD (Contratos COCR)       ║');
+    console.log('║   MIGRAÇÃO SUPABASE → GESTÃO GOR (Contratos COCR)      ║');
     console.log('╚════════════════════════════════════════════════════════╝\n');
 
     try {
@@ -174,7 +174,7 @@ async function main() {
         }
 
         // Confirmar importação
-        const confirm = await question(`\n❓ Deseja importar ${contracts.length} contratos para o FluxoProd? (s/n): `);
+        const confirm = await question(`\n❓ Deseja importar ${contracts.length} contratos para o Gestão GOR? (s/n): `);
 
         if (confirm.toLowerCase() !== 's') {
             console.log('❌ Importação cancelada.');
