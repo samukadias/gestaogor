@@ -1,0 +1,134 @@
+[
+  {
+    "column_name": "id",
+    "data_type": "uuid"
+  },
+  {
+    "column_name": "created_at",
+    "data_type": "timestamp with time zone"
+  },
+  {
+    "column_name": "updated_at",
+    "data_type": "timestamp with time zone"
+  },
+  {
+    "column_name": "contrato",
+    "data_type": "text"
+  },
+  {
+    "column_name": "cliente",
+    "data_type": "text"
+  },
+  {
+    "column_name": "analista_responsavel",
+    "data_type": "text"
+  },
+  {
+    "column_name": "status",
+    "data_type": "text"
+  },
+  {
+    "column_name": "status_vencimento",
+    "data_type": "text"
+  },
+  {
+    "column_name": "data_fim_efetividade",
+    "data_type": "date"
+  },
+  {
+    "column_name": "valor_contrato",
+    "data_type": "numeric"
+  },
+  {
+    "column_name": "objeto",
+    "data_type": "text"
+  },
+  {
+    "column_name": "tipo_tratativa",
+    "data_type": "text"
+  },
+  {
+    "column_name": "secao_responsavel",
+    "data_type": "text"
+  },
+  {
+    "column_name": "created_by",
+    "data_type": "text"
+  },
+  {
+    "column_name": "grupo_cliente",
+    "data_type": "text"
+  },
+  {
+    "column_name": "termo",
+    "data_type": "text"
+  },
+  {
+    "column_name": "tipo_aditamento",
+    "data_type": "text"
+  },
+  {
+    "column_name": "etapa",
+    "data_type": "text"
+  },
+  {
+    "column_name": "data_inicio_efetividade",
+    "data_type": "date"
+  },
+  {
+    "column_name": "data_limite_andamento",
+    "data_type": "date"
+  },
+  {
+    "column_name": "valor_faturado",
+    "data_type": "numeric"
+  },
+  {
+    "column_name": "valor_cancelado",
+    "data_type": "numeric"
+  },
+  {
+    "column_name": "valor_a_faturar",
+    "data_type": "numeric"
+  },
+  {
+    "column_name": "valor_novo_contrato",
+    "data_type": "numeric"
+  },
+  {
+    "column_name": "observacao",
+    "data_type": "text"
+  },
+  {
+    "column_name": "numero_processo_sei_nosso",
+    "data_type": "text"
+  },
+  {
+    "column_name": "numero_processo_sei_cliente",
+    "data_type": "text"
+  },
+  {
+    "column_name": "contrato_cliente",
+    "data_type": "text"
+  },
+  {
+    "column_name": "contrato_anterior",
+    "data_type": "text"
+  },
+  {
+    "column_name": "numero_pnpp_crm",
+    "data_type": "text"
+  },
+  {
+    "column_name": "sei",
+    "data_type": "text"
+  },
+  {
+    "column_name": "contrato_novo",
+    "data_type": "text"
+  },
+  {
+    "column_name": "termo_novo",
+    "data_type": "text"
+  }
+]

@@ -1,0 +1,475 @@
+import React from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/Components/ui/table";
+import { Badge } from "@/Components/ui/badge";
+import { Button } from "@/Components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/Components/ui/select";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { format } from "date-fns";
+import { Edit, Eye, ArrowUpDown, ArrowUp, ArrowDown, Trash2 } from "lucide-react";
+import { Link } from "react-router-dom";
+import { createPageUrl } from "@/utils/legacy";
+import { useDeleteContract } from "@/hooks/useContracts";
+import { useAuth } from "@/context/AuthContext";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { Contract } from "@/Entities/Contract";
+
+const statusColors = {
+  "Ativo": "bg-green-100 text-green-800",
+  "Renovado": "bg-blue-100 text-blue-800",
+  "Encerrado": "bg-slate-100 text-slate-800",
+  "Expirado": "bg-red-100 text-red-800",
+  "Em Negociação": "bg-yellow-100 text-yellow-800"
+};
+
+const vencimentoColors = {
+  "Normal": "bg-gray-100 text-gray-800",
+  "Atenção": "bg-orange-100 text-orange-800",
+  "Urgente": "bg-red-100 text-red-800",
+  "Vencido": "bg-red-100 text-red-800"
+};
+
+export default function ContractTable({ contracts, isLoading, onContractUpdate, clientView = 'grupo' }) {
+  // Obter usuário do localStorage para consistência com o resto do app
+  const user = JSON.parse(localStorage.getItem('fluxo_user') || localStorage.getItem('user') || '{}');
+  console.log('User status para exclusão (Prazos):', {
+    role: user?.role,
+    perfil: user?.perfil,
+    profile_type: user?.profile_type
+  });
+  const deleteMutation = useDeleteContract();
+  const [currentPage, setCurrentPage] = React.useState(1);
+  const [sortConfig, setSortConfig] = React.useState({ key: null, direction: 'asc' });
+
+  // Helper function to check if user is an analyst
+  const isAnalyst = React.useMemo(() => {
+    return user?.perfil === "ANALISTA" || user?.role === "analyst";
+  }, [user]);
+
+
+
+  const [itemsPerPage, setItemsPerPage] = React.useState(10);
+
+  // Reset page when contracts change (e.g. filtering)
+  React.useEffect(() => {
+    setCurrentPage(1);
+  }, [contracts.length]);
+
+  const sortedContracts = React.useMemo(() => {
+    let sortableItems = [...contracts];
+    if (sortConfig.key !== null) {
+      sortableItems.sort((a, b) => {
+        let aValue = a[sortConfig.key];
+        let bValue = b[sortConfig.key];
+
+        // Handle specific fields
+        if (sortConfig.key === 'valor_contrato') {
+          aValue = parseFloat(aValue || 0);
+          bValue = parseFloat(bValue || 0);
+        } else if (sortConfig.key === 'data_fim_efetividade') {
+          const aDate = aValue ? new Date(aValue) : new Date(0);
+          const bDate = bValue ? new Date(bValue) : new Date(0);
+          aValue = aDate.getTime();
+          bValue = bDate.getTime();
+        } else {
+          // Strings case insensitive
+          aValue = aValue ? aValue.toString().toLowerCase() : '';
+          bValue = bValue ? bValue.toString().toLowerCase() : '';
+        }
+
+        if (aValue < bValue) {
+          return sortConfig.direction === 'asc' ? -1 : 1;
+        }
+        if (aValue > bValue) {
+          return sortConfig.direction === 'asc' ? 1 : -1;
+        }
+        return 0;
+      });
+    }
+    return sortableItems;
+  }, [contracts, sortConfig]);
+
+  const requestSort = (key) => {
+    let direction = 'asc';
+    if (sortConfig.key === key && sortConfig.direction === 'asc') {
+      direction = 'desc';
+    }
+    setSortConfig({ key, direction });
+  };
+
+  const getSortIcon = (key) => {
+    if (sortConfig.key !== key) return <ArrowUpDown className="w-4 h-4 ml-2 text-gray-400 opacity-50 group-hover:opacity-100" />;
+    if (sortConfig.direction === 'asc') return <ArrowUp className="w-4 h-4 ml-2 text-blue-600" />;
+    return <ArrowDown className="w-4 h-4 ml-2 text-blue-600" />;
+  };
+
+
+
+  if (isLoading) {
+    return (
+      <Card>
+        <CardContent className="p-0">
+          <div className="overflow-x-auto">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>{isAnalyst ? 'Objeto do Contrato' : 'Analista Responsável'}</TableHead>
+                  <TableHead>{clientView === 'cliente' ? 'Cliente' : 'Grupo Cliente'}</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Vencimento</TableHead>
+                  <TableHead>Valor</TableHead>
+                  <TableHead>Observações</TableHead>
+                  <TableHead>Ações</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {Array(5).fill(0).map((_, i) => (
+                  <TableRow key={i}>
+                    <TableCell><Skeleton className="h-4 w-32" /></TableCell>
+                    <TableCell><Skeleton className="h-4 w-24" /></TableCell>
+                    <TableCell><Skeleton className="h-6 w-16 rounded-full" /></TableCell>
+                    <TableCell><Skeleton className="h-6 w-20 rounded-full" /></TableCell>
+                    <TableCell><Skeleton className="h-4 w-32" /></TableCell>
+                    <TableCell><Skeleton className="h-8 w-16" /></TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (contracts.length === 0) {
+    return (
+      <Card>
+        <CardContent className="text-center py-12">
+          <p className="text-gray-500 mb-4">Nenhum contrato encontrado</p>
+          <Link to={createPageUrl("NewContract")}>
+            <Button className="bg-blue-600 hover:bg-blue-700">
+              Cadastrar Primeiro Contrato
+            </Button>
+          </Link>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  // Pagination Logic
+  const totalPages = Math.ceil(sortedContracts.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentContracts = sortedContracts.slice(startIndex, endIndex);
+
+  const goToPage = (page) => {
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page);
+    }
+  };
+
+  return (
+    <Card>
+      <CardContent className="p-0">
+        <div className="overflow-x-auto">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>
+                  <Button
+                    variant="ghost"
+                    className="p-0 h-auto font-medium hover:bg-transparent group"
+                    onClick={() => requestSort(isAnalyst ? 'objeto_contrato' : 'analista_responsavel')}
+                  >
+                    {isAnalyst ? 'Objeto do Contrato' : 'Analista Responsável'}
+                    {getSortIcon(isAnalyst ? 'objeto_contrato' : 'analista_responsavel')}
+                  </Button>
+                </TableHead>
+                <TableHead>
+                  <Button
+                    variant="ghost"
+                    className="p-0 h-auto font-medium hover:bg-transparent group"
+                    onClick={() => requestSort(clientView === 'cliente' ? 'cliente' : 'grupo_cliente')}
+                  >
+                    {clientView === 'cliente' ? 'Cliente' : 'Grupo Cliente'}
+                    {getSortIcon(clientView === 'cliente' ? 'cliente' : 'grupo_cliente')}
+                  </Button>
+                </TableHead>
+                <TableHead>
+                  <Button
+                    variant="ghost"
+                    className="p-0 h-auto font-medium hover:bg-transparent group"
+                    onClick={() => requestSort('contrato')}
+                  >
+                    Contrato
+                    {getSortIcon('contrato')}
+                  </Button>
+                </TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead>Vencimento</TableHead>
+                <TableHead>
+                  <Button
+                    variant="ghost"
+                    className="p-0 h-auto font-medium hover:bg-transparent group"
+                    onClick={() => requestSort('data_fim_efetividade')}
+                  >
+                    Data Fim
+                    {getSortIcon('data_fim_efetividade')}
+                  </Button>
+                </TableHead>
+                <TableHead className="text-right">
+                  <div className="flex justify-end">
+                    <Button
+                      variant="ghost"
+                      className="p-0 h-auto font-medium hover:bg-transparent group"
+                      onClick={() => requestSort('valor_contrato')}
+                    >
+                      Valor
+                      {getSortIcon('valor_contrato')}
+                    </Button>
+                  </div>
+                </TableHead>
+                <TableHead>Observações</TableHead>
+                <TableHead>Ações</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {currentContracts.map((contract) => (
+                <TableRow key={contract.id} className="hover:bg-gray-50">
+                  <TableCell className="font-medium">
+                    {isAnalyst ? (
+                      <span className="line-clamp-2 text-xs" title={contract.objeto_contrato || ""}>
+                        {contract.objeto_contrato || "-"}
+                      </span>
+                    ) : (
+                      contract.analista_responsavel || "-"
+                    )}
+                  </TableCell>
+                  <TableCell>{(clientView === 'cliente' ? contract.cliente : contract.grupo_cliente) || "-"}</TableCell>
+                  <TableCell>{contract.contrato}</TableCell>
+                  <TableCell>
+                    <Badge className={statusColors[contract.status]}>
+                      {contract.status}
+                    </Badge>
+                  </TableCell>
+                  <TableCell>
+                    {(() => {
+                      if (contract.status !== 'Ativo' && contract.status !== 'Expirado' && contract.status !== 'Vencido') {
+                        return "-";
+                      }
+
+                      let status = contract.status_vencimento;
+                      const days = contract.daysUntilExpiry;
+
+                      // Calculate status if missing or empty
+                      if (!status && days !== null && days !== undefined && !isNaN(days)) {
+                        if (days < 0) status = "Vencido";
+                        else if (days <= 30) status = "Urgente";
+                        else if (days <= 60) status = "Atenção";
+                        else status = "Normal";
+                      }
+
+                      // Fallback for color if status is somehow still weird or custom
+                      const colorClass = vencimentoColors[status] || "bg-gray-100 text-gray-800";
+
+                      return (
+                        <Badge className={`${colorClass} whitespace-nowrap`}>
+                          {status || "N/A"}
+                          {days !== null && days !== undefined && !isNaN(days) && (
+                            <span className="ml-1">
+                              ({days}d)
+                            </span>
+                          )}
+                        </Badge>
+                      );
+                    })()}
+                  </TableCell>
+                  <TableCell>
+                    {(() => {
+                      if (!contract.data_fim_efetividade) return "-";
+                      const dateStr = contract.data_fim_efetividade.includes("T")
+                        ? contract.data_fim_efetividade
+                        : contract.data_fim_efetividade + "T00:00:00";
+                      const date = new Date(dateStr);
+                      return isNaN(date.getTime()) ? "Data Inválida" : format(date, "dd/MM/yyyy");
+                    })()}
+                  </TableCell>
+                  <TableCell className="text-right">
+                    {contract.valor_contrato ?
+                      contract.valor_contrato.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: 2, maximumFractionDigits: 2 }) :
+                      "-"
+                    }
+                  </TableCell>
+                  <TableCell className="max-w-[200px]">
+                    <span className="truncate block text-sm text-gray-600" title={contract.observacao || ""}>
+                      {contract.observacao || "-"}
+                    </span>
+                  </TableCell>
+                  <TableCell>
+                    <TooltipProvider>
+                      <div className="flex gap-2">
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Link to={`${createPageUrl("ViewContract")}?id=${contract.id}`}>
+                              <Button variant="ghost" size="icon">
+                                <Eye className="w-4 h-4" />
+                              </Button>
+                            </Link>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>Visualizar</p>
+                          </TooltipContent>
+                        </Tooltip>
+
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Link to={`${createPageUrl("EditContract")}/${contract.id}`}>
+                              <Button variant="ghost" size="icon">
+                                <Edit className="w-4 h-4" />
+                              </Button>
+                            </Link>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>Editar</p>
+                          </TooltipContent>
+                        </Tooltip>
+
+                        {/* Botão Excluir - Para Gestores/Admin ou Analista dono do contrato */}
+                        {(user?.perfil === "GESTOR" || user?.perfil === "ADMIN" ||
+                          user?.role === "admin" || user?.role === "manager" || user?.role === "gestor" ||
+                          user?.profile_type === "gestor" ||
+                          ((user?.role === "analyst" || user?.perfil === "ANALISTA") &&
+                            (contract.analista_responsavel || "").trim().toLowerCase() ===
+                            (user?.full_name || user?.name || "").trim().toLowerCase())) && (
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <AlertDialog>
+                                  <AlertDialogTrigger asChild>
+                                    <Button variant="ghost" size="icon" className="text-red-500 hover:text-red-700 hover:bg-red-50">
+                                      <Trash2 className="w-4 h-4" />
+                                    </Button>
+                                  </AlertDialogTrigger>
+                                  <AlertDialogContent>
+                                    <AlertDialogHeader>
+                                      <AlertDialogTitle>Excluir Contrato</AlertDialogTitle>
+                                      <AlertDialogDescription>
+                                        Tem certeza que deseja excluir o contrato <strong>{contract.contrato}</strong>?
+                                        Esta ação não pode ser desfeita.
+                                      </AlertDialogDescription>
+                                    </AlertDialogHeader>
+                                    <AlertDialogFooter>
+                                      <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                                      <AlertDialogAction
+                                        onClick={() => deleteMutation.mutate(contract.id)}
+                                        className="bg-red-600 hover:bg-red-700"
+                                        disabled={deleteMutation.isPending}
+                                      >
+                                        {deleteMutation.isPending ? "Excluindo..." : "Excluir"}
+                                      </AlertDialogAction>
+                                    </AlertDialogFooter>
+                                  </AlertDialogContent>
+                                </AlertDialog>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>Excluir</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          )}
+
+
+                      </div>
+                    </TooltipProvider>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+
+        {/* Pagination Controls */}
+        {totalPages >= 1 && (
+          <div className="flex items-center justify-between px-4 py-4 border-t">
+            <div className="flex items-center gap-4 text-sm text-gray-500">
+              <span>Mostrando {Math.min(startIndex + 1, contracts.length)} a {Math.min(endIndex, contracts.length)} de {contracts.length} contratos</span>
+
+              <div className="flex items-center gap-2">
+                <span>Linhas por página:</span>
+                <Select value={String(itemsPerPage)} onValueChange={(v) => {
+                  setItemsPerPage(Number(v));
+                  setCurrentPage(1);
+                }}>
+                  <SelectTrigger className="w-[70px] h-8">
+                    <SelectValue placeholder={itemsPerPage} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="10">10</SelectItem>
+                    <SelectItem value="20">20</SelectItem>
+                    <SelectItem value="30">30</SelectItem>
+                    <SelectItem value="50">50</SelectItem>
+                    <SelectItem value="100">100</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => goToPage(currentPage - 1)}
+                disabled={currentPage === 1}
+              >
+                Anterior
+              </Button>
+              <div className="flex items-center gap-1">
+                {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                  // Logic to show window of pages around current page
+                  let pageNum;
+                  if (totalPages <= 5) {
+                    pageNum = i + 1;
+                  } else if (currentPage <= 3) {
+                    pageNum = i + 1;
+                  } else if (currentPage >= totalPages - 2) {
+                    pageNum = totalPages - 4 + i;
+                  } else {
+                    pageNum = currentPage - 2 + i;
+                  }
+
+                  return (
+                    <Button
+                      key={pageNum}
+                      variant={currentPage === pageNum ? "default" : "ghost"}
+                      size="sm"
+                      className="w-8 h-8 p-0"
+                      onClick={() => goToPage(pageNum)}
+                    >
+                      {pageNum}
+                    </Button>
+                  );
+                })}
+              </div>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => goToPage(currentPage + 1)}
+                disabled={currentPage === totalPages}
+              >
+                Próximo
+              </Button>
+            </div>
+          </div>
+        )}
+      </CardContent>
+    </Card>
+  );
+}

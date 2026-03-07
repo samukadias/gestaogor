@@ -1,0 +1,14 @@
+{
+  "id": 44,
+  "name": "Gestor Fluxo",
+  "email": "gestor@fluxo.com",
+  "password": "$2b$10$wK4xIRXPBiMN0lK2hQyue.PQBNTMg2wIu5MaX4hTsYG3jmDNHaTrm",
+  "role": "manager",
+  "department": "GOR",
+  "allowed_modules": [
+    "flow",
+    "finance",
+    "contracts"
+  ],
+  "profile_type": null
+}

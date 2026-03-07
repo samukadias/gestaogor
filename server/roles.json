@@ -1,0 +1,26 @@
+[
+  {
+    "role": "requester",
+    "count": "35"
+  },
+  {
+    "role": "manager",
+    "count": "11"
+  },
+  {
+    "role": "analyst",
+    "count": "30"
+  },
+  {
+    "role": "admin",
+    "count": "1"
+  },
+  {
+    "role": "executive",
+    "count": "2"
+  },
+  {
+    "role": "client",
+    "count": "2"
+  }
+]

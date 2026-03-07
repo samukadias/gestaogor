@@ -1,0 +1,12 @@
+name,email,password,role
+Gestor Fluxo,gestor@fluxo.com,123,manager
+Ana Respons??vel,responsavel@fluxo.com,123,analyst
+Jo??o Solicitante,solicitante@fluxo.com,123,requester
+Analista Real,real@fluxo.com,123,analyst
+Outro Gestor,outro@fluxo.com,123,manager
+ADAIR LINO,adair@fluxo.com,123,analyst
+AMIM,amim@fluxo.com,123,requester
+AQUILA MACHADO LIMA,aquila@sp.gov.br,123,analyst
+JAIR BARRETO DE VASCONCELOS,jvasconcelos@sp.gov.br,123,analyst
+MARTA,marta@fluxo.com,123,requester
+ANA LIDIA,lidia@fluxo.com,123,requester

@@ -1,0 +1,85 @@
+[2026-02-07T01:18:47.813Z] Query: SELECT * FROM demands WHERE status NOT IN ('ENTREGUE', 'CANCELADA') AND search = $1 ORDER BY created_date DESC | Values: [""]
+[2026-02-07T01:18:49.032Z] Query: SELECT * FROM demands | Values: []
+[2026-02-07T01:18:49.097Z] Rows returned: 243
+[2026-02-07T01:18:50.463Z] Server starting...
+[2026-02-07T01:19:06.143Z] Query: SELECT * FROM demands WHERE status NOT IN ('ENTREGUE', 'CANCELADA') AND search = $1 ORDER BY created_date DESC | Values: [""]
+[2026-02-07T01:19:07.664Z] Query: SELECT * FROM demands WHERE status NOT IN ('ENTREGUE', 'CANCELADA') AND search = $1 ORDER BY created_date DESC | Values: [""]
+[2026-02-07T01:19:09.732Z] Query: SELECT * FROM demands WHERE status NOT IN ('ENTREGUE', 'CANCELADA') AND search = $1 ORDER BY created_date DESC | Values: [""]
+[2026-02-07T01:19:13.779Z] Query: SELECT * FROM demands WHERE status NOT IN ('ENTREGUE', 'CANCELADA') AND search = $1 ORDER BY created_date DESC | Values: [""]
+[2026-02-07T01:19:16.303Z] Query: SELECT * FROM demands | Values: []
+[2026-02-07T01:19:16.339Z] Rows returned: 243
+[2026-02-07T01:19:19.527Z] Query: SELECT * FROM demands WHERE status NOT IN ('ENTREGUE', 'CANCELADA') AND search = $1 ORDER BY created_date DESC | Values: [""]
+[2026-02-07T01:19:21.643Z] Query: SELECT * FROM demands WHERE status NOT IN ('ENTREGUE', 'CANCELADA') AND search = $1 ORDER BY created_date DESC | Values: [""]
+[2026-02-07T01:19:23.670Z] Query: SELECT * FROM demands WHERE status NOT IN ('ENTREGUE', 'CANCELADA') AND search = $1 ORDER BY created_date DESC | Values: [""]
+[2026-02-07T01:19:24.097Z] Query: SELECT * FROM demands | Values: []
+[2026-02-07T01:19:24.134Z] Rows returned: 243
+[2026-02-07T01:19:30.871Z] Query: SELECT * FROM demands WHERE status NOT IN ('ENTREGUE', 'CANCELADA') AND search = $1 ORDER BY created_date DESC | Values: [""]
+[2026-02-07T01:19:32.392Z] Query: SELECT * FROM demands WHERE status NOT IN ('ENTREGUE', 'CANCELADA') AND search = $1 ORDER BY created_date DESC | Values: [""]
+[2026-02-07T01:19:34.238Z] Query: SELECT * FROM demands WHERE search = $1 ORDER BY created_date DESC | Values: [""]
+[2026-02-07T01:19:35.276Z] Query: SELECT * FROM demands WHERE search = $1 ORDER BY created_date DESC | Values: [""]
+[2026-02-07T01:19:37.318Z] Query: SELECT * FROM demands WHERE search = $1 ORDER BY created_date DESC | Values: [""]
+[2026-02-07T01:19:41.345Z] Query: SELECT * FROM demands WHERE search = $1 ORDER BY created_date DESC | Values: [""]
+[2026-02-07T01:20:53.556Z] Query: SELECT * FROM demands WHERE search = $1 ORDER BY created_date DESC | Values: [""]
+[2026-02-07T01:20:54.973Z] Query: SELECT * FROM demands WHERE search = $1 ORDER BY created_date DESC | Values: [""]
+[2026-02-07T01:20:57.037Z] Query: SELECT * FROM demands WHERE search = $1 ORDER BY created_date DESC | Values: [""]
+[2026-02-07T01:21:01.078Z] Query: SELECT * FROM demands WHERE search = $1 ORDER BY created_date DESC | Values: [""]
+[2026-02-07T01:21:21.880Z] Query: SELECT * FROM demands | Values: []
+[2026-02-07T01:21:21.914Z] Rows returned: 243
+[2026-02-07T01:21:23.592Z] Query: SELECT * FROM demands WHERE status NOT IN ('ENTREGUE', 'CANCELADA') AND search = $1 ORDER BY created_date DESC | Values: [""]
+[2026-02-07T01:21:25.449Z] Query: SELECT * FROM demands WHERE status NOT IN ('ENTREGUE', 'CANCELADA') AND search = $1 ORDER BY created_date DESC | Values: [""]
+[2026-02-07T01:21:27.481Z] Query: SELECT * FROM demands WHERE status NOT IN ('ENTREGUE', 'CANCELADA') AND search = $1 ORDER BY created_date DESC | Values: [""]
+[2026-02-07T01:21:31.508Z] Query: SELECT * FROM demands WHERE status NOT IN ('ENTREGUE', 'CANCELADA') AND search = $1 ORDER BY created_date DESC | Values: [""]
+[2026-02-07T01:22:03.331Z] Query: SELECT * FROM demands | Values: []
+[2026-02-07T01:22:03.772Z] Rows returned: 243
+[2026-02-07T01:22:09.289Z] Query: SELECT * FROM demands WHERE status NOT IN ('ENTREGUE', 'CANCELADA') AND search = $1 ORDER BY created_date DESC | Values: [""]
+[2026-02-07T01:22:10.969Z] Query: SELECT * FROM demands WHERE status NOT IN ('ENTREGUE', 'CANCELADA') AND search = $1 ORDER BY created_date DESC | Values: [""]
+[2026-02-07T01:22:13.036Z] Query: SELECT * FROM demands WHERE status NOT IN ('ENTREGUE', 'CANCELADA') AND search = $1 ORDER BY created_date DESC | Values: [""]
+[2026-02-07T01:22:17.077Z] Query: SELECT * FROM demands WHERE status NOT IN ('ENTREGUE', 'CANCELADA') AND search = $1 ORDER BY created_date DESC | Values: [""]
+[2026-02-07T01:22:26.765Z] Query: SELECT * FROM demands WHERE status NOT IN ('ENTREGUE', 'CANCELADA') AND search = $1 ORDER BY created_date DESC | Values: [""]
+[2026-02-07T01:22:27.947Z] Query: SELECT * FROM demands WHERE status NOT IN ('ENTREGUE', 'CANCELADA') AND search = $1 ORDER BY created_date DESC | Values: [""]
+[2026-02-07T01:22:29.982Z] Query: SELECT * FROM demands WHERE status NOT IN ('ENTREGUE', 'CANCELADA') AND search = $1 ORDER BY created_date DESC | Values: [""]
+[2026-02-07T01:22:34.014Z] Query: SELECT * FROM demands WHERE status NOT IN ('ENTREGUE', 'CANCELADA') AND search = $1 ORDER BY created_date DESC | Values: [""]
+[2026-02-07T01:23:31.123Z] Query: SELECT * FROM demands WHERE status NOT IN ('ENTREGUE', 'CANCELADA') AND search = $1 ORDER BY created_date DESC | Values: [""]
+[2026-02-07T01:23:32.684Z] Query: SELECT * FROM demands WHERE status NOT IN ('ENTREGUE', 'CANCELADA') AND search = $1 ORDER BY created_date DESC | Values: [""]
+[2026-02-07T01:23:34.752Z] Query: SELECT * FROM demands WHERE status NOT IN ('ENTREGUE', 'CANCELADA') AND search = $1 ORDER BY created_date DESC | Values: [""]
+[2026-02-07T01:23:38.807Z] Query: SELECT * FROM demands WHERE status NOT IN ('ENTREGUE', 'CANCELADA') AND search = $1 ORDER BY created_date DESC | Values: [""]
+[2026-02-07T01:25:45.022Z] Server starting...
+[2026-02-07T01:26:01.785Z] Query: SELECT * FROM demands | Values: []
+[2026-02-07T01:26:02.295Z] Rows returned: 243
+[2026-02-07T01:26:03.814Z] Query: SELECT * FROM demands WHERE status NOT IN ('ENTREGUE', 'CANCELADA') AND search = $1 ORDER BY created_date DESC | Values: [""]
+[2026-02-07T01:26:05.911Z] Query: SELECT * FROM demands WHERE status NOT IN ('ENTREGUE', 'CANCELADA') AND search = $1 ORDER BY created_date DESC | Values: [""]
+[2026-02-07T01:26:07.949Z] Query: SELECT * FROM demands WHERE status NOT IN ('ENTREGUE', 'CANCELADA') AND search = $1 ORDER BY created_date DESC | Values: [""]
+[2026-02-07T01:26:11.976Z] Query: SELECT * FROM demands WHERE status NOT IN ('ENTREGUE', 'CANCELADA') AND search = $1 ORDER BY created_date DESC | Values: [""]
+[2026-02-07T01:28:04.114Z] Query: SELECT * FROM demands ORDER BY created_date DESC | Values: []
+[2026-02-07T01:28:04.590Z] Rows returned: 243
+[2026-02-07T01:29:27.454Z] Query: SELECT * FROM demands | Values: []
+[2026-02-07T01:29:27.476Z] Rows returned: 243
+[2026-02-07T01:30:14.673Z] Query: SELECT * FROM demands | Values: []
+[2026-02-07T01:30:15.479Z] Rows returned: 243
+[2026-02-07T01:30:33.192Z] Query: SELECT * FROM demands | Values: []
+[2026-02-07T01:30:33.210Z] Rows returned: 243
+[2026-02-07T01:33:50.092Z] Query: SELECT * FROM demands ORDER BY created_date DESC | Values: []
+[2026-02-07T01:33:50.532Z] Rows returned: 243
+[2026-02-07T01:33:51.485Z] Query: SELECT * FROM demands | Values: []
+[2026-02-07T01:33:51.502Z] Rows returned: 243
+[2026-02-07T01:42:19.551Z] Query: SELECT * FROM demands | Values: []
+[2026-02-07T01:42:19.606Z] Rows returned: 243
+[2026-02-07T01:42:21.738Z] Query: SELECT * FROM demands ORDER BY created_date DESC | Values: []
+[2026-02-07T01:42:21.758Z] Rows returned: 243
+[2026-02-07T01:49:13.085Z] Query: SELECT * FROM demands | Values: []
+[2026-02-07T01:49:13.141Z] Rows returned: 243
+[2026-02-07T01:52:05.759Z] Query: SELECT * FROM demands | Values: []
+[2026-02-07T01:52:05.789Z] Rows returned: 243
+[2026-02-07T01:53:07.546Z] Server starting...
+[2026-02-07T12:19:05.033Z] Query: SELECT * FROM demands | Values: []
+[2026-02-07T12:19:05.064Z] Rows returned: 243
+[2026-02-07T12:19:15.648Z] Query: SELECT * FROM demands | Values: []
+[2026-02-07T12:19:15.670Z] Rows returned: 243
+[2026-02-07T12:19:28.207Z] Query: SELECT * FROM demands | Values: []
+[2026-02-07T12:19:28.234Z] Rows returned: 243
+[2026-02-07T12:24:38.729Z] Server starting...
+[2026-02-07T12:41:48.664Z] Server starting...
+[2026-02-07T13:14:13.940Z] Server starting...
+[2026-02-07T14:32:16.308Z] Server starting...
+[2026-02-09T11:32:16.956Z] Server starting...
+[2026-02-10T11:24:59.318Z] Server starting...

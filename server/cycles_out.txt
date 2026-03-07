@@ -1,0 +1,7 @@
+Cycle [1] RENOVAÇÃO: 15 demands
+Cycle [2] CONTRATO NOVO: 0 demands
+Cycle [3] REQUISIÇÃO DE SERVIÇOS (RS): 9 demands
+Cycle [4] PRORROGAÇÃO: 5 demands
+Cycle [5] PRORROGAÇÃO COM ADITAMENTO: 3 demands
+Cycle [6] VENDA NOVA: 148 demands
+Cycle [7] RENOVAÇÃO COM MUDANÇA: 15 demands

@@ -1,0 +1,12 @@
+{
+  "id": 105,
+  "name": "THIAGO",
+  "email": "thiago@cdpc.com",
+  "password": "$2b$10$yMvYyrsikC2HJdacIpyrdu532toYnQL2RspFfQeSYTXY11L.4GTp6",
+  "role": "manager",
+  "department": "CDPC",
+  "allowed_modules": [
+    "flow"
+  ],
+  "profile_type": null
+}

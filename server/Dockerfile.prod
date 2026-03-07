@@ -1,0 +1,17 @@
+FROM node:18-alpine
+
+WORKDIR /app
+
+# Copia package.json e instala dependências
+COPY package*.json ./
+RUN npm install --production
+
+# Copia o restante do código backend
+COPY . .
+
+# Define a variável de ambiente para produção
+ENV NODE_ENV=production
+
+EXPOSE 3000
+
+CMD ["node", "index.js"]

@@ -1,0 +1,304 @@
+﻿diff --git a/server/helpers/crud.js b/server/helpers/crud.js
+index 3f76a6f..eb2f546 100644
+--- a/server/helpers/crud.js
++++ b/server/helpers/crud.js
+@@ -252,6 +252,12 @@ const createCrudRoutes = (app, resource, tableName) => {
+                 await db.query(`DELETE FROM monthly_attestations WHERE contract_id = $1`, [req.params.id]);
+             }
+ 
++            if (tableName === 'demands') {
++                await db.query(`DELETE FROM status_history WHERE demand_id = $1`, [req.params.id]);
++                await db.query(`DELETE FROM stage_history WHERE demand_id = $1`, [req.params.id]);
++                await db.query(`DELETE FROM activity_log WHERE entity = 'demands' AND entity_id = $1`, [String(req.params.id)]);
++            }
++
+             const result = await db.query(`DELETE FROM ${tableName} WHERE id = $1 RETURNING *`, [req.params.id]);
+             if (result.rows.length === 0) return res.status(404).json({ error: 'Not found' });
+             res.json({ message: 'Deleted successfully' });
+diff --git a/server/index.js b/server/index.js
+index 4a87fc7..26c7623 100644
+--- a/server/index.js
++++ b/server/index.js
+@@ -44,14 +44,14 @@ if (process.env.LAN_ORIGIN) {
+ 
+ app.use(cors({
+     origin: (origin, callback) => {
+-        // Allow requests with no origin (mobile apps, curl, etc.) or from allowed list
+-        if (!origin || allowedOrigins.some(o => origin.startsWith(o.replace(/:\d+$/, '')))) {
+-            callback(null, true);
+-        } else {
+-            callback(null, true); // In dev, allow all; in production tighten this
+-        }
++        // Allow all origins in this development/intranet environment to prevent CORS blocks
++        callback(null, true);
+     },
++    methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE', 'OPTIONS'],
++    allowedHeaders: ['Content-Type', 'Authorization'],
+     exposedHeaders: ['X-Total-Count'],
++    preflightContinue: false,
++    optionsSuccessStatus: 204,
+ }));
+ 
+ app.use(express.json({ limit: '10mb' }));
+@@ -161,8 +161,29 @@ for (const [resource, table] of crudEntities) {
+ const port = process.env.PORT || 3000;
+ 
+ const start = async () => {
+-    await initDb();
+-    await seedUsers();
++    let retries = 5;
++    while (retries > 0) {
++        try {
++            await initDb();
++            console.log("Ô£à Database initialized successfully");
++            break;
++        } catch (error) {
++            console.error(`ÔØî Database connection failed: ${error.message}`);
++            retries -= 1;
++            if (retries === 0) {
++                console.error("ÔØî Max retries reached. Exiting...");
++                process.exit(1);
++            }
++            console.log(`ÔÅ│ Retrying in 5 seconds... (${retries} retries left)`);
++            await new Promise(res => setTimeout(res, 5000));
++        }
++    }
++
++    try {
++        await seedUsers();
++    } catch (seedError) {
++        console.error(`ÔÜá´©Å Warning: Failed to seed users: ${seedError.message}`);
++    }
+ 
+     app.listen(port, () => {
+         console.log(`Ô£à Server running on port ${port}`);
+diff --git a/server/routes/demands.js b/server/routes/demands.js
+index 95ae590..7925c56 100644
+--- a/server/routes/demands.js
++++ b/server/routes/demands.js
+@@ -125,4 +125,34 @@ router.delete('/:id/history', async (req, res) => {
+     }
+ });
+ 
++/**
++ * DELETE /demands/:id
++ * Delete a demand and all related records (cascade)
++ */
++router.delete('/:id', async (req, res) => {
++    const client = await db.connect();
++    try {
++        await client.query('BEGIN');
++
++        await client.query('DELETE FROM status_history WHERE demand_id = $1', [req.params.id]);
++        await client.query('DELETE FROM stage_history WHERE demand_id = $1', [req.params.id]);
++        await client.query("DELETE FROM activity_log WHERE entity = 'demands' AND entity_id = $1", [String(req.params.id)]);
++
++        const result = await client.query('DELETE FROM demands WHERE id = $1 RETURNING *', [req.params.id]);
++
++        if (result.rows.length === 0) {
++            await client.query('ROLLBACK');
++            return res.status(404).json({ error: 'Demand not found' });
++        }
++
++        await client.query('COMMIT');
++        res.json({ message: 'Deleted successfully' });
++    } catch (err) {
++        await client.query('ROLLBACK');
++        handleError(err, res, 'Delete demand');
++    } finally {
++        client.release();
++    }
++});
++
+ module.exports = router;
+diff --git a/src/Components/dashboard/BottleneckBarChart.jsx b/src/Components/dashboard/BottleneckBarChart.jsx
+index da783bf..6e828c5 100644
+--- a/src/Components/dashboard/BottleneckBarChart.jsx
++++ b/src/Components/dashboard/BottleneckBarChart.jsx
+@@ -11,6 +11,7 @@ const STATUS_COLORS = {
+     "PEND├èNCIA DOP": "#f97316",
+     "PEND├èNCIA DOP E DDS": "#f97316",
+     "PEND├èNCIA COMERCIAL": "#f43f5e",
++    "PEND├èNCIA SUPRIMENTOS": "#14b8a6",
+     "PEND├èNCIA FORNECEDOR": "#ef4444",
+     "CONGELADA": "#06b6d4",
+     "ENTREGUE": "#10b981",
+diff --git a/src/Components/dashboard/BottleneckChart.jsx b/src/Components/dashboard/BottleneckChart.jsx
+index f0b2c4c..ad53674 100644
+--- a/src/Components/dashboard/BottleneckChart.jsx
++++ b/src/Components/dashboard/BottleneckChart.jsx
+@@ -11,6 +11,7 @@ const STATUS_COLORS = {
+     "PEND├èNCIA DOP": "#f97316",
+     "PEND├èNCIA DOP E DDS": "#f97316",
+     "PEND├èNCIA COMERCIAL": "#f43f5e",
++    "PEND├èNCIA SUPRIMENTOS": "#14b8a6",
+     "PEND├èNCIA FORNECEDOR": "#ef4444",
+     "CONGELADA": "#06b6d4",
+     "ENTREGUE": "#10b981",
+diff --git a/src/Components/demands/DemandCard.jsx b/src/Components/demands/DemandCard.jsx
+index 06efded..234fd4c 100644
+--- a/src/Components/demands/DemandCard.jsx
++++ b/src/Components/demands/DemandCard.jsx
+@@ -18,6 +18,7 @@ const ACTIVE_STATUSES = [
+     "PEND├èNCIA DOP",
+     "PEND├èNCIA DOP E DDS",
+     "PEND├èNCIA COMERCIAL",
++    "PEND├èNCIA SUPRIMENTOS",
+     "PEND├èNCIA FORNECEDOR"
+ ];
+ 
+diff --git a/src/Components/demands/DemandFilters.jsx b/src/Components/demands/DemandFilters.jsx
+index 1e46486..f2314a9 100644
+--- a/src/Components/demands/DemandFilters.jsx
++++ b/src/Components/demands/DemandFilters.jsx
+@@ -15,6 +15,7 @@ const STATUS_LIST = [
+     "PEND├èNCIA DOP",
+     "PEND├èNCIA DOP E DDS",
+     "PEND├èNCIA COMERCIAL",
++    "PEND├èNCIA SUPRIMENTOS",
+     "PEND├èNCIA FORNECEDOR",
+     "CONGELADA",
+     "ENTREGUE",
+diff --git a/src/Components/demands/DemandForm.jsx b/src/Components/demands/DemandForm.jsx
+index 502ccd0..cfe6bf1 100644
+--- a/src/Components/demands/DemandForm.jsx
++++ b/src/Components/demands/DemandForm.jsx
+@@ -33,6 +33,7 @@ const STATUS_LIST = [
+     "PEND├èNCIA DOP",
+     "PEND├èNCIA DOP E DDS",
+     "PEND├èNCIA COMERCIAL",
++    "PEND├èNCIA SUPRIMENTOS",
+     "PEND├èNCIA FORNECEDOR",
+     "CONGELADA",
+     "ENTREGUE",
+diff --git a/src/Components/demands/StatusBadge.jsx b/src/Components/demands/StatusBadge.jsx
+index d9c4951..5574bfe 100644
+--- a/src/Components/demands/StatusBadge.jsx
++++ b/src/Components/demands/StatusBadge.jsx
+@@ -11,6 +11,7 @@ const statusStyles = {
+     "PEND├èNCIA DOP": "bg-orange-50 text-orange-700 border-orange-200",
+     "PEND├èNCIA DOP E DDS": "bg-orange-50 text-orange-700 border-orange-200",
+     "PEND├èNCIA COMERCIAL": "bg-rose-50 text-rose-700 border-rose-200",
++    "PEND├èNCIA SUPRIMENTOS": "bg-teal-50 text-teal-700 border-teal-200",
+     "PEND├èNCIA FORNECEDOR": "bg-red-50 text-red-700 border-red-200",
+     "CONGELADA": "bg-cyan-50 text-cyan-700 border-cyan-200",
+     "ENTREGUE": "bg-emerald-50 text-emerald-700 border-emerald-200",
+diff --git a/src/Components/demands/StatusTimeline.jsx b/src/Components/demands/StatusTimeline.jsx
+index a1b88e0..d977ca9 100644
+--- a/src/Components/demands/StatusTimeline.jsx
++++ b/src/Components/demands/StatusTimeline.jsx
+@@ -29,6 +29,7 @@ const statusColors = {
+     "PEND├èNCIA DOP": "bg-orange-500",
+     "PEND├èNCIA DOP E DDS": "bg-orange-500",
+     "PEND├èNCIA COMERCIAL": "bg-rose-500",
++    "PEND├èNCIA SUPRIMENTOS": "bg-teal-500",
+     "PEND├èNCIA FORNECEDOR": "bg-red-500",
+     "CONGELADA": "bg-cyan-500",
+     "CORRE├ç├âO": "bg-yellow-500",
+diff --git a/src/Pages/DemandDetail.jsx b/src/Pages/DemandDetail.jsx
+index 77386a2..e34ef0f 100644
+--- a/src/Pages/DemandDetail.jsx
++++ b/src/Pages/DemandDetail.jsx
+@@ -7,12 +7,12 @@ import { Button } from "@/components/ui/button";
+ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+ import { ArrowLeft, Edit2, Clock, Calendar, User, Building2, Layers, AlertTriangle, Trash2, Timer } from "lucide-react";
+-import StatusBadge from '@/components/demands/StatusBadge';
+-import PriorityBadge from '@/components/demands/PriorityBadge';
+-import StatusTimeline from '@/components/demands/StatusTimeline';
+-import { StageStepper } from '@/components/demands/StageStepper';
+-import DemandForm from '@/components/demands/DemandForm';
+-import { calculateWorkDays, calculateSLA } from '@/components/demands/EffortCalculator';
++import StatusBadge from '@/Components/demands/StatusBadge';
++import PriorityBadge from '@/Components/demands/PriorityBadge';
++import StatusTimeline from '@/Components/demands/StatusTimeline';
++import { StageStepper } from '@/Components/demands/StageStepper';
++import DemandForm from '@/Components/demands/DemandForm';
++import { calculateWorkDays, calculateSLA } from '@/Components/demands/EffortCalculator';
+ import { format, parseISO, isAfter, differenceInCalendarDays } from 'date-fns';
+ import { ptBR } from 'date-fns/locale';
+ import { toast } from "sonner";
+@@ -38,6 +38,7 @@ const ACTIVE_STATUSES = [
+     "PEND├èNCIA DOP",
+     "PEND├èNCIA DOP E DDS",
+     "PEND├èNCIA COMERCIAL",
++    "PEND├èNCIA SUPRIMENTOS",
+     "PEND├èNCIA FORNECEDOR"
+ ];
+ 
+diff --git a/src/Pages/ManagerDashboard.jsx b/src/Pages/ManagerDashboard.jsx
+index 743c504..6c8cc16 100644
+--- a/src/Pages/ManagerDashboard.jsx
++++ b/src/Pages/ManagerDashboard.jsx
+@@ -23,12 +23,14 @@ const ACTIVE_STATUSES = [
+     "PEND├èNCIA DOP",
+     "PEND├èNCIA DOP E DDS",
+     "PEND├èNCIA COMERCIAL",
++    "PEND├èNCIA SUPRIMENTOS",
+     "PEND├èNCIA FORNECEDOR"
+ ];
+ 
+ const TRATATIVA_STATUSES = [
+     "EM ANDAMENTO",
+     "PEND├èNCIA COMERCIAL",
++    "PEND├èNCIA SUPRIMENTOS",
+     "PEND├èNCIA FORNECEDOR",
+     "PEND├èNCIA DDS",
+     "PEND├èNCIA DOP",
+@@ -116,8 +118,9 @@ export default function ManagerDashboard() {
+     const years = useMemo(() => {
+         const yearsSet = new Set();
+         demands.forEach(d => {
+-            if (d.created_date) {
+-                yearsSet.add(String(getYear(parseISO(d.created_date))));
++            const refDate = d.qualification_date || d.created_date;
++            if (refDate) {
++                yearsSet.add(String(getYear(parseISO(refDate))));
+             }
+         });
+         yearsSet.add(String(currentYear));
+@@ -126,8 +129,9 @@ export default function ManagerDashboard() {
+ 
+     const filteredDemands = useMemo(() => {
+         return demands.filter(d => {
+-            if (d.created_date) {
+-                const demandYear = String(getYear(parseISO(d.created_date)));
++            const refDate = d.qualification_date || d.created_date;
++            if (refDate) {
++                const demandYear = String(getYear(parseISO(refDate)));
+                 if (demandYear !== selectedYear) return false;
+             }
+ 
+@@ -502,7 +506,7 @@ export default function ManagerDashboard() {
+                                 <table className="w-full text-sm text-left">
+                                     <thead className="text-xs text-slate-700 uppercase bg-slate-50 sticky top-0 z-10 shadow-sm">
+                                         <tr>
+-                                            <th className="px-6 py-3">ID</th>
++                                            <th className="px-6 py-3">N┬║ Demanda</th>
+                                             <th className="px-6 py-3">Produto / Demanda</th>
+                                             <th className="px-6 py-3">Status</th>
+                                             <th className="px-6 py-3">Respons├ível</th>
+@@ -512,8 +516,8 @@ export default function ManagerDashboard() {
+                                     <tbody className="divide-y divide-slate-100">
+                                         {detailedDemands.length > 0 ? detailedDemands.map(d => (
+                                             <tr key={d.id} className="hover:bg-slate-50/80 transition-colors">
+-                                                <td className="px-6 py-4 font-medium text-slate-900 w-[100px]">
+-                                                    #{d.id}
++                                                <td className="px-6 py-4 font-medium text-slate-900 w-[120px]">
++                                                    #{d.demand_number || d.id}
+                                                 </td>
+                                                 <td className="px-6 py-4">
+                                                     <div className="font-medium text-slate-800">{d.product}</div>
+diff --git a/start_fluxoprod.bat b/start_fluxoprod.bat
+index 54f72e1..5160377 100644
+--- a/start_fluxoprod.bat
++++ b/start_fluxoprod.bat
+@@ -12,7 +12,7 @@ start "FluxoProd Backend" cmd /k "node server/index.js"
+ 
+ :: Inicia o Frontend em uma nova janela
+ echo Iniciando Frontend na porta 5173...
+-start "FluxoProd Frontend" cmd /k "npm run dev -- --host 0.0.0.0 --port 5173"
++start "FluxoProd Frontend" cmd /k "npm run dev"
+ 
+ echo Servidores em processo de inicializacao! 
+ echo Nao feche as janelas pretas que abriram.

@@ -1,0 +1,14 @@
+{
+  "id": 47,
+  "name": "DAYANE MESQUITA",
+  "email": "dayane@gor.com",
+  "password": "$2b$10$JvMsSLPThY2k5peUfQ43Ue5SP097KXYRI3GGuQyx6N9qMlSadOYvq",
+  "role": "general_manager",
+  "department": "GOR",
+  "allowed_modules": [
+    "flow",
+    "finance",
+    "contracts"
+  ],
+  "profile_type": null
+}
