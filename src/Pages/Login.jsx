@@ -55,7 +55,7 @@ export default function LoginPage() {
                         Gestão GOR <br />
                         <span className="text-indigo-400">Simples e Eficiente.</span>
                     </h1>
-                    <p className="text-lg text-slate-300 leading-relaxed">
+                    <p className="text-indigo-100/80 mb-8 max-w-sm text-lg leading-relaxed mix-blend-plus-lighter opacity-90 font-medium">
                         Otimize o fluxo de trabalho da sua equipe com nossa plataforma integrada de gestão de contratos e demandas.
                     </p>
                 </div>

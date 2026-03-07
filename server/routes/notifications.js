@@ -108,7 +108,7 @@ const generateExpiringContractNotifications = async () => {
         for (const { days, type } of intervals) {
             const contracts = await db.query(`
                 SELECT id, cliente, contrato, data_fim_efetividade
-                FROM archive_prazos_contracts
+                FROM contracts
                 WHERE data_fim_efetividade BETWEEN NOW() AND NOW() + INTERVAL '${days} days'
                 AND status = 'Ativo'
             `);

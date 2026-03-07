@@ -10,7 +10,6 @@ const ALLOWED_SORT_FIELDS = {
     status_history: ['id', 'demand_id', 'changed_at', 'from_status', 'to_status'],
     stage_history: ['id', 'demand_id', 'stage', 'entered_at', 'exited_at', 'duration_minutes'],
     finance_contracts: ['id', 'client_name', 'pd_number', 'responsible_analyst', 'created_at'],
-    archive_prazos_contracts: ['id', 'cliente', 'contrato', 'data_inicio_efetividade', 'data_fim_efetividade', 'status'],
     cycles: ['id', 'name'],
     requesters: ['id', 'name', 'email'],
     holidays: ['id', 'date', 'name'],
@@ -31,7 +30,6 @@ const ALLOWED_FILTER_COLUMNS = {
     status_history: ['id', 'demand_id', 'from_status', 'to_status'],
     stage_history: ['id', 'demand_id', 'stage'],
     finance_contracts: ['id', 'client_name', 'pd_number', 'responsible_analyst', 'sei_process_number'],
-    archive_prazos_contracts: ['id', 'analista_responsavel', 'cliente', 'contrato', 'status', 'status_vencimento', 'grupo_cliente'],
     cycles: ['id', 'name'],
     requesters: ['id', 'name', 'email'],
     holidays: ['id', 'name'],
@@ -68,7 +66,6 @@ const ALLOWED_WRITE_COLUMNS = {
         'cocr_contract_id', 'grupo_cliente', 'termo', 'objeto',
         'data_inicio_efetividade', 'data_fim_efetividade', 'status_vigencia'
     ],
-    archive_prazos_contracts: ['analista_responsavel', 'cliente', 'grupo_cliente', 'contrato', 'termo', 'status', 'status_vencimento', 'data_inicio_efetividade', 'data_fim_efetividade', 'data_limite_andamento', 'valor_contrato', 'valor_faturado', 'valor_cancelado', 'valor_a_faturar', 'valor_novo_contrato', 'objeto', 'tipo_tratativa', 'tipo_aditamento', 'etapa', 'secao_responsavel', 'observacao', 'numero_processo_sei_nosso', 'numero_processo_sei_cliente', 'contrato_cliente', 'contrato_anterior', 'numero_pnpp_crm', 'sei', 'contrato_novo', 'termo_novo', 'created_by', 'margem_bruta', 'margem_liquida'],
     cycles: ['name'],
     requesters: ['name', 'email'],
     holidays: ['date', 'name', 'type'],

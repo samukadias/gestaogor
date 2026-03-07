@@ -11,7 +11,11 @@ export default defineConfig({
     plugins: [
         react(),
         VitePWA({
-            registerType: 'prompt', // Require user interaction to reload when there's an update
+            disable: true, // Emergency OFF due to layout breaking cache
+            devOptions: {
+                enabled: false, // Voltando para falso para impedir perda de layout no dev
+            },
+            registerType: 'prompt', // Retornando para prompt para evitar cache instantâneo errado
             includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'masked-icon.svg'],
             manifest: {
                 name: 'GestaoGOR', // Using the new name explicitly requested for the roadmap
@@ -75,7 +79,10 @@ export default defineConfig({
         },
     },
     server: {
-        port: 80,
-        host: true
+        port: 5173,
+        host: true,
+        watch: {
+            usePolling: true,
+        }
     }
 })

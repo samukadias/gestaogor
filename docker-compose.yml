@@ -3,7 +3,7 @@ version: '3.8'
 services:
   db:
     image: postgres:15-alpine
-    container_name: fluxo_prod_db
+    container_name: gestaogor_db
     restart: always
     environment:
       POSTGRES_USER: admin
@@ -16,7 +16,7 @@ services:
 
   server:
     build: ./server
-    container_name: fluxo_prod_server
+    container_name: gestaogor_server
     restart: always
     ports:
       - "3000:3000"
@@ -35,12 +35,10 @@ services:
 
   client:
     build: .
-    container_name: fluxo_prod_client
+    container_name: gestaogor_client
     restart: always
     ports:
       - "5173:5173"
-    environment:
-      - VITE_API_URL=http://localhost:3000
     volumes:
       - .:/app
       - /app/node_modules

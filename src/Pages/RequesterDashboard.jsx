@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { fluxoApi } from '@/api/fluxoClient';
 import { useQuery } from '@tanstack/react-query';
-import { Card, CardContent, CardHeader, CardTitle } from "@/Components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { FileText, Clock, AlertTriangle, CheckCircle2, List } from "lucide-react";
-import StatsCard from '@/Components/dashboard/StatsCard';
+import StatsCard from '@/components/dashboard/StatsCard';
 import { isAfter, parseISO, format } from 'date-fns';
-import { Button } from "@/Components/ui/button";
+import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const ACTIVE_STATUSES = [
     "PENDENTE TRIAGEM",
@@ -106,7 +107,25 @@ export default function RequesterDashboard() {
         }, {});
     }, [users]);
 
-    if (isLoading) return <div className="p-10 text-center">Carregando suas demandas...</div>;
+    if (isLoading) {
+        return (
+            <div className="p-6 min-h-screen bg-slate-50 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-blue-100/50 via-slate-50 to-slate-100">
+                <div className="max-w-7xl mx-auto space-y-8">
+                    <div className="space-y-2">
+                        <Skeleton className="h-8 w-64" />
+                        <Skeleton className="h-4 w-48" />
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <Skeleton className="h-32 rounded-xl" />
+                        <Skeleton className="h-32 rounded-xl" />
+                        <Skeleton className="h-32 rounded-xl" />
+                        <Skeleton className="h-32 rounded-xl" />
+                    </div>
+                    <Skeleton className="h-96 rounded-xl" />
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="p-6 min-h-screen bg-slate-50 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-blue-100/50 via-slate-50 to-slate-100">

@@ -75,9 +75,16 @@ const app = express();
 // MIDDLEWARE
 // ========================================
 
-// CORS - Allow all origins for this internal network application
+// CORS - Allow localhost and LAN IPs for mobile PWA testing
 app.use(cors({
-    origin: '*', // Allow all origins to connect
+    origin: function (origin, callback) {
+        // Allows localhost, 127.0.0.1, and common local network IP ranges
+        if (!origin || origin.includes('localhost') || origin.includes('127.0.0.1') || origin.includes('192.168.') || origin.includes('10.') || origin.includes('172.')) {
+            callback(null, true);
+        } else {
+            callback(new Error('Origin não autorizada pelo CORS'));
+        }
+    },
     methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     exposedHeaders: ['X-Total-Count'],
@@ -303,7 +310,7 @@ const crudEntities = [
     ['stage_history', 'stage_history'],
     ['finance_contracts', 'finance_contracts'],
     ['contracts', 'contracts'],
-    ['deadline_contracts', 'deadline_contracts'],
+
     ['clients', 'clients'],
     ['analysts', 'analysts'],
     ['cycles', 'cycles'],

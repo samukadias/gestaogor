@@ -4,9 +4,7 @@ services:
   server:
     build:
       context: ./server
-      dockerfile: Dockerfile.prod
-    container_name: fluxoprod_backend_prod
-    restart: always
+    container_name: gestaogor_backend_prod
     ports:
       - "3000:3000"
     environment:
@@ -23,11 +21,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.prod
-      args:
-        # Define a URL do backend. Em produção, você pode querer colocar o seu IP público ou domínio aqui.
-        - VITE_API_URL=${VITE_API_URL:-http://localhost:3000}
-    container_name: fluxoprod_frontend_prod
-    restart: always
+      args: # Define a URL do backend. Em produção, você pode querer colocar o seu IP público ou domínio aqui.
+    container_name: gestaogor_frontend_prod
     ports:
       - "80:80"
     depends_on:

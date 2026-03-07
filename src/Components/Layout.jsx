@@ -3,6 +3,7 @@ import { NavLink, useLocation, Outlet } from 'react-router-dom';
 import { LayoutDashboard, List, Settings, LogOut, Menu, DollarSign, CalendarClock, FileText, UserCog, BarChart3, GitBranch, Database, Search, Activity, ChevronLeft, ChevronRight, Server } from 'lucide-react';
 import NotificationCenter from './NotificationCenter';
 import ForcePasswordChangeModal from "./ForcePasswordChangeModal";
+import AppBreadcrumb from './AppBreadcrumb';
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -281,10 +282,13 @@ export default function Layout({ onLogout, user }) {
 
             {/* Main Content */}
             <main className={cn(
-                "flex-1 pt-16 md:pt-0 min-h-screen transition-all duration-300 w-full overflow-x-hidden",
+                "flex-1 pt-16 md:pt-0 min-h-screen transition-all duration-300 w-full overflow-x-hidden flex flex-col",
                 isCollapsed ? "md:ml-20" : "md:ml-[260px]"
             )}>
-                <Outlet />
+                <AppBreadcrumb />
+                <div className="flex-1">
+                    <Outlet />
+                </div>
             </main>
 
             {/* Modal for forcing password resets on default passwords */}

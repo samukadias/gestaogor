@@ -12,6 +12,7 @@ import { ptBR } from 'date-fns/locale';
 import { CalendarIcon, Save, X, Check, ChevronsUpDown } from "lucide-react";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
 import CurrencyInput from "@/components/ui/currency-input";
 
 const STAGES = [
@@ -94,13 +95,13 @@ export default function DemandForm({
 
         // Validate Required Fields
         if (!formData.product || !formData.product.trim()) {
-            alert('Por favor, informe o Produto.');
+            toast.error('Por favor, informe o Produto.');
             return;
         }
 
         // Validate delivery_date change reason
         if (showReasonField && !formData.delivery_date_change_reason.trim()) {
-            alert('Por favor, informe o motivo da alteração da data de entrega.');
+            toast.error('Por favor, informe o motivo da alteração da data de entrega.');
             return;
         }
 

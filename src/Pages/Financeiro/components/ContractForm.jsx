@@ -29,7 +29,7 @@ export default function ContractForm({ contract, onSubmit, isLoading }) {
 
     // Buscar contratos de Prazos para obter PDs por cliente
     const { data: prazosContracts = [] } = useQuery({
-        queryKey: ['deadline-contracts'],
+        queryKey: ['contracts-for-pds'],
         queryFn: () => fluxoApi.entities.Contract.list(),
         select: (data) => {
             // Filtrar apenas contratos que têm cliente e contrato (PD)

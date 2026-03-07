@@ -4,12 +4,13 @@ const path = require('path');
 const fs = require('fs');
 
 // Configuration
-const PG_DUMP_PATH = '"C:\\Program Files\\PostgreSQL\\16\\bin\\pg_dump.exe"';
+const PG_DUMP_PATH = 'pg_dump';
 const BACKUP_DIR = path.join(__dirname, '../backups');
-const NETWORK_BACKUP_DIR = 'T:\\DRC\\GOR\\NLRP\\GERAL\\BACKUP SISTEMA GOR';
-const DB_NAME = 'fluxo_prod';
-const DB_USER = 'postgres';
-const DB_HOST = '127.0.0.1';
+const NETWORK_BACKUP_DIR = path.join(BACKUP_DIR, 'network_sync'); // Simulando rede localmente no Docker
+const DB_NAME = process.env.DB_NAME || 'fluxo_prod';
+const DB_USER = process.env.DB_USER || 'admin';
+const DB_HOST = process.env.DB_HOST || 'db';
+const DB_PASSWORD = process.env.DB_PASSWORD || 'password';
 const MAX_BACKUPS = 21; // 3 backups per day * 7 days
 
 // Ensure backup directories exist
@@ -38,7 +39,7 @@ const createBackup = () => {
     const filename = `backup_${timestamp}.sql`;
     const filepath = path.join(BACKUP_DIR, filename);
 
-    const command = `${PG_DUMP_PATH} -U ${DB_USER} -h ${DB_HOST} -d ${DB_NAME} -f "${filepath}"`;
+    const command = `PGPASSWORD='${DB_PASSWORD}' ${PG_DUMP_PATH} -U ${DB_USER} -h ${DB_HOST} -d ${DB_NAME} -f "${filepath}"`;
 
     console.log(`[Backup] Starting backup: ${filename}`);
 

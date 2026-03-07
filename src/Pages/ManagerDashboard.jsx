@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { fluxoApi } from '@/api/fluxoClient';
 import { useAuth } from '@/context/AuthContext';
 import { useQuery } from '@tanstack/react-query';
+import { Skeleton } from "@/components/ui/skeleton";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { FileText, Clock, AlertTriangle, CheckCircle2, TrendingUp, Layers, Briefcase, Timer, List } from "lucide-react";
@@ -52,22 +53,22 @@ export default function ManagerDashboard() {
     const [selectedFilter, setSelectedFilter] = useState(null);
     const [selectedHeatmapStatus, setSelectedHeatmapStatus] = useState(null);
 
-    const { data: demands = [] } = useQuery({
+    const { data: demands = [], isLoading: loadingDemands } = useQuery({
         queryKey: ['demands'],
         queryFn: () => fluxoApi.entities.Demand.list()
     });
 
-    const { data: history = [] } = useQuery({
+    const { data: history = [], isLoading: loadingHistory } = useQuery({
         queryKey: ['all-history'],
         queryFn: () => fluxoApi.entities.StatusHistory.list()
     });
 
-    const { data: stageHistory = [] } = useQuery({
+    const { data: stageHistory = [], isLoading: loadingStageHistory } = useQuery({
         queryKey: ['stage-history'],
         queryFn: () => fluxoApi.entities.StageHistory.list()
     });
 
-    const { data: users = [] } = useQuery({
+    const { data: users = [], isLoading: loadingUsers } = useQuery({
         queryKey: ['users'],
         queryFn: () => fluxoApi.entities.User.list()
     });
@@ -79,15 +80,17 @@ export default function ManagerDashboard() {
         );
     }, [users]);
 
-    const { data: requesters = [] } = useQuery({
+    const { data: requesters = [], isLoading: loadingRequesters } = useQuery({
         queryKey: ['requesters'],
         queryFn: () => fluxoApi.entities.Requester.list()
     });
 
-    const { data: holidays = [] } = useQuery({
+    const { data: holidays = [], isLoading: loadingHolidays } = useQuery({
         queryKey: ['holidays'],
         queryFn: () => fluxoApi.entities.Holiday.list()
     });
+
+    const isLoading = loadingDemands || loadingHistory || loadingStageHistory || loadingUsers || loadingRequesters || loadingHolidays;
 
     const currentAnalyst = useMemo(() => {
         if (!user || (user.role !== 'analyst' && user.perfil !== 'ANALISTA')) return null;
@@ -457,6 +460,37 @@ export default function ManagerDashboard() {
     const isManager = user?.role === 'manager' || user?.perfil === 'GESTOR' || user?.department === 'GOR' || (user?.department === 'CDPC' && user?.role === 'manager');
     const isRequester = user?.role === 'requester';
     const isAnalystCDPC = user?.role === 'analyst' && user?.department === 'CDPC';
+
+    if (isLoading) {
+        return (
+            <div className="p-6 min-h-screen bg-slate-50 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-indigo-100/50 via-slate-50 to-slate-100">
+                <div className="max-w-7xl mx-auto space-y-8">
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                        <div className="space-y-2">
+                            <Skeleton className="h-8 w-64" />
+                            <Skeleton className="h-4 w-48" />
+                        </div>
+                        <div className="flex gap-3">
+                            <Skeleton className="h-10 w-28" />
+                            <Skeleton className="h-10 w-48" />
+                        </div>
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4">
+                        <Skeleton className="h-32 rounded-xl" />
+                        <Skeleton className="h-32 rounded-xl" />
+                        <Skeleton className="h-32 rounded-xl" />
+                        <Skeleton className="h-32 rounded-xl" />
+                        <Skeleton className="h-32 rounded-xl" />
+                        <Skeleton className="h-32 rounded-xl" />
+                    </div>
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <Skeleton className="h-[300px] rounded-xl" />
+                        <Skeleton className="h-[300px] rounded-xl" />
+                    </div>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="p-6 min-h-screen bg-slate-50 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-indigo-100/50 via-slate-50 to-slate-100">

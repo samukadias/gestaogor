@@ -42,27 +42,32 @@ export default function PendencyCard({ title, value, subtitle, type = 'default',
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3 }}
         >
-            <Card className={`${styles.bg} border-0 shadow-xl overflow-hidden`}>
-                <CardContent className="p-6">
+            <Card className={`${styles.bg} border-0 shadow-xl overflow-hidden relative group`}>
+                <CardContent className="p-6 relative z-10">
                     <div className="flex items-start justify-between">
-                        <div>
-                            <p className={`text-sm font-medium ${styles.text} opacity-80`}>
+                        <div className="flex-1 min-w-0 mr-4">
+                            <p className={`text-sm font-medium ${styles.text} opacity-80 truncate`}>
                                 {title}
                             </p>
-                            <p className={`text-3xl font-bold ${styles.text} mt-2`}>
+                            <p className={`text-2xl xl:text-3xl font-bold ${styles.text} mt-2 truncate`}>
                                 {value}
                             </p>
                             {subtitle && (
-                                <p className={`text-xs ${styles.text} opacity-70 mt-1`}>
+                                <p className={`text-xs ${styles.text} opacity-70 mt-1 truncate`}>
                                     {subtitle}
                                 </p>
                             )}
                         </div>
-                        <div className={`p-3 rounded-xl ${styles.iconBg}`}>
+                        <div className={`p-3 rounded-xl ${styles.iconBg} shrink-0`}>
                             <IconComponent className={`w-6 h-6 ${styles.text}`} />
                         </div>
                     </div>
                 </CardContent>
+
+                {/* Decorative watermarked icon */}
+                <div className="absolute -right-4 -bottom-4 opacity-10 pointer-events-none group-hover:scale-110 transition-transform duration-500">
+                    <IconComponent size={100} className={styles.text} />
+                </div>
             </Card>
         </motion.div>
     );

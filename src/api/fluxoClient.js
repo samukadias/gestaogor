@@ -118,7 +118,7 @@ export const fluxoApi = {
             ...createCrud('finance_contracts'),
             generateSchedule: (id) => fluxClient.post(`/contracts/${id}/generate-attestations`).then(res => res.data)
         },
-        DeadlineContract: createCrud('deadline_contracts'),
+
         Invoice: createCrud('invoices'),
         MonthlyAttestation: createCrud('attestations'),
         Client: createCrud('clients'),

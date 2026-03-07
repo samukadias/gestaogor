@@ -1,6 +1,7 @@
 import { useState, useEffect, lazy, Suspense } from "react";
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { Toaster } from "@/components/ui/toaster";
+import { Toaster as SonnerToaster } from "sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
@@ -8,7 +9,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 
 // Pages
-const Dashboard = lazy(() => import("./pages/Dashboard"));
+import Dashboard from "./pages/Dashboard";
 const Demands = lazy(() => import("./pages/Demands"));
 const DemandDetail = lazy(() => import("./pages/DemandDetail"));
 const Settings = lazy(() => import("./pages/Settings"));
@@ -150,6 +151,7 @@ function App() {
                     </BrowserRouter>
                 </AuthProvider>
                 <Toaster />
+                <SonnerToaster richColors position="top-right" />
                 <ReloadPrompt />
                 <SystemMaintenance />
             </TooltipProvider>
