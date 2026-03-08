@@ -5,16 +5,25 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContaine
 const COLORS = ['#3b82f6', '#ef4444', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899', '#06b6d4', '#84cc16'];
 
 export default function PendencyCharts({ attestations }) {
+    const getClientInitials = (name) => {
+        if (!name) return '';
+        // Remove words like "do, da, de, e" to clean the acronym
+        const words = name.split(' ').filter(w => !['do', 'da', 'de', 'e', 'das', 'dos'].includes(w.toLowerCase()));
+        if (words.length === 1) return words[0].substring(0, 3).toUpperCase();
+        return words.map(w => w[0]).join('').substring(0, 4).toUpperCase();
+    };
+
     // Rendereing Horizontal BarChart for better readability
     // Pendências por cliente
     const pendencyByClient = attestations.reduce((acc, att) => {
         const pendency = (att.billed_amount || 0) - (att.paid_amount || 0);
         if (pendency > 0) {
-            const existing = acc.find(item => item.client === att.client_name);
+            const acronym = getClientInitials(att.client_name);
+            const existing = acc.find(item => item.fullName === att.client_name);
             if (existing) {
                 existing.value += pendency;
             } else {
-                acc.push({ client: att.client_name, value: pendency });
+                acc.push({ client: acronym, fullName: att.client_name, value: pendency });
             }
         }
         return acc;
@@ -46,10 +55,13 @@ export default function PendencyCharts({ attestations }) {
 
     const CustomTooltip = ({ active, payload, label }) => {
         if (active && payload && payload.length) {
+            // Se for o gráfico de clientes (que tem fullName)
+            const fullName = payload[0]?.payload?.fullName || label || payload[0]?.name;
+
             return (
-                <div className="bg-white p-3 rounded-lg shadow-lg border border-slate-100">
-                    <p className="text-slate-600 text-sm">{label || payload[0]?.name}</p>
-                    <p className="text-slate-900 font-semibold">
+                <div className="bg-white p-3 rounded-lg shadow-lg border border-slate-100 max-w-[250px]">
+                    <p className="text-slate-600 text-sm break-words whitespace-normal">{fullName}</p>
+                    <p className="text-slate-900 font-semibold mt-1">
                         {new Intl.NumberFormat('pt-BR', {
                             style: 'currency',
                             currency: 'BRL'
