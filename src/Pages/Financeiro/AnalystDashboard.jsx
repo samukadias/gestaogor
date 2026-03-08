@@ -90,13 +90,12 @@ export default function AnalystDashboard() {
         }).format(value);
     };
 
-    const formatCompactCurrency = (value) => {
-        return new Intl.NumberFormat('pt-BR', {
-            style: 'currency',
-            currency: 'BRL',
-            notation: 'compact',
-            maximumFractionDigits: 1
-        }).format(value);
+    const formatShortCurrency = (val) => {
+        if (val === 0) return 'R$ 0';
+        if (val >= 1000000000) return `R$ ${(val / 1000000000).toFixed(1)} Bi`;
+        if (val >= 1000000) return `R$ ${(val / 1000000).toFixed(1)} M`;
+        if (val >= 1000) return `R$ ${(val / 1000).toFixed(1)} K`;
+        return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 }).format(val);
     };
 
     return (
@@ -110,7 +109,7 @@ export default function AnalystDashboard() {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
                     <PendencyCard
                         title="Total Faturado"
-                        value={formatCompactCurrency(totalBilled)}
+                        value={formatShortCurrency(totalBilled)}
                         fullValue={formatCurrency(totalBilled)}
                         subtitle={`${filteredAttestations.length} registros no mês`}
                         type="default"
@@ -118,7 +117,7 @@ export default function AnalystDashboard() {
                     />
                     <PendencyCard
                         title="Total Apontado"
-                        value={formatCompactCurrency(totalMeasurement)}
+                        value={formatShortCurrency(totalMeasurement)}
                         fullValue={formatCurrency(totalMeasurement)}
                         subtitle="Métrica de medição base"
                         type="success"
@@ -126,7 +125,7 @@ export default function AnalystDashboard() {
                     />
                     <PendencyCard
                         title="Total GAP"
-                        value={formatCompactCurrency(totalGap)}
+                        value={formatShortCurrency(totalGap)}
                         fullValue={formatCurrency(totalGap)}
                         subtitle={totalGap > 0 ? 'Diferença: Apontado - Faturado' : 'Sem GAPs no período'}
                         type={totalGap > 0 ? 'danger' : 'success'}
