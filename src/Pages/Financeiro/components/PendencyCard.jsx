@@ -3,7 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { AlertTriangle, CheckCircle, TrendingUp, TrendingDown } from "lucide-react";
 import { motion } from "framer-motion";
 
-export default function PendencyCard({ title, value, subtitle, type = 'default', icon: Icon }) {
+export default function PendencyCard({ title, value, fullValue, subtitle, type = 'default', icon: Icon }) {
     const getStyles = () => {
         switch (type) {
             case 'danger':
@@ -49,7 +49,10 @@ export default function PendencyCard({ title, value, subtitle, type = 'default',
                             <p className={`text-sm font-medium ${styles.text} opacity-80 truncate`}>
                                 {title}
                             </p>
-                            <p className={`text-2xl xl:text-3xl font-bold ${styles.text} mt-2 truncate`}>
+                            <p
+                                className={`text-2xl xl:text-3xl font-bold ${styles.text} mt-2 truncate cursor-help`}
+                                title={fullValue || value}
+                            >
                                 {value}
                             </p>
                             {subtitle && (
