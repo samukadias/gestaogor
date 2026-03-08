@@ -52,7 +52,7 @@ export default function Dashboard() {
     const isAnalyst = !isManager;
     const analystName = user?.full_name || user?.name;
 
-    console.log('Dashboard CVAC Filter:', { isManager, isAnalyst, analystName });
+
 
     const { data: attestations = [], isLoading, isError, error } = useQuery({
         queryKey: ['all-attestations', isAnalyst ? analystName : 'all'],

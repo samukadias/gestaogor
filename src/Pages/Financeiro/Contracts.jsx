@@ -109,9 +109,7 @@ export default function Contracts() {
     });
 
     const handleSubmit = (data) => {
-        console.log('=== HANDLE SUBMIT CHAMADO ===');
-        console.log('Editing contract:', editingContract);
-        console.log('Data recebida:', data);
+
 
         if (editingContract) {
             updateMutation.mutate({ id: editingContract.id, data });
