@@ -4,6 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Loader2, DollarSign, AlertTriangle, CheckCircle2, Users } from "lucide-react";
 import PendencyCard from "./components/PendencyCard";
 import PendencyTable from "./components/PendencyTable";
+import PendencyCharts from "./components/PendencyCharts";
 import DashboardFilters from "./components/DashboardFilters";
 import AttestationDetailsDialog from "./components/AttestationDetailsDialog";
 
@@ -20,7 +21,7 @@ export default function AnalystDashboard() {
         pd: 'all',
         esp: 'all',
         year: currentYear,
-        month: currentMonth,
+        month: 'all', // Padrão "Todos"
         analyst: analystName // Fixed to the analyst
     });
 
@@ -50,14 +51,20 @@ export default function AnalystDashboard() {
         });
 
     const filteredAttestations = attestations.filter(att => {
-        if (filters.client !== 'all' && att.client_name !== filters.client) return false;
-        if (filters.pd !== 'all' && att.pd_number !== filters.pd) return false;
-        if (filters.esp !== 'all' && att.esp_number !== filters.esp) return false;
+        const fClient = filters.client || 'all';
+        const fPd = filters.pd || 'all';
+        const fEsp = filters.esp || 'all';
+        const fYear = filters.year || 'all';
+        const fMonth = filters.month || 'all';
+
+        if (fClient !== 'all' && att.client_name !== fClient) return false;
+        if (fPd !== 'all' && att.pd_number !== fPd) return false;
+        if (fEsp !== 'all' && att.esp_number !== fEsp) return false;
 
         if (att.reference_month) {
             const [attYear, attMonth] = att.reference_month.split('-');
-            if (filters.year !== 'all' && attYear !== filters.year) return false;
-            if (filters.month !== 'all' && attMonth !== filters.month) return false;
+            if (fYear !== 'all' && attYear !== fYear) return false;
+            if (fMonth !== 'all' && attMonth !== fMonth) return false;
         }
 
         return true;
@@ -132,6 +139,11 @@ export default function AnalystDashboard() {
                         months={months}
                         analysts={[]} // Empty so it hide analyst filter (if DashboardFilters handles it)
                     />
+                </div>
+
+                {/* Charts */}
+                <div className="mb-8">
+                    <PendencyCharts attestations={filteredAttestations} />
                 </div>
 
                 <div>
