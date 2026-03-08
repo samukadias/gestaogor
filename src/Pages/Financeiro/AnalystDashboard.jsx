@@ -90,6 +90,15 @@ export default function AnalystDashboard() {
         }).format(value);
     };
 
+    const formatCompactCurrency = (value) => {
+        return new Intl.NumberFormat('pt-BR', {
+            style: 'currency',
+            currency: 'BRL',
+            notation: 'compact',
+            maximumFractionDigits: 1
+        }).format(value);
+    };
+
     return (
         <div className="p-6 bg-slate-50 min-h-screen">
             <div className="max-w-7xl mx-auto">
@@ -101,21 +110,24 @@ export default function AnalystDashboard() {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
                     <PendencyCard
                         title="Total Faturado"
-                        value={formatCurrency(totalBilled)}
+                        value={formatCompactCurrency(totalBilled)}
+                        fullValue={formatCurrency(totalBilled)}
                         subtitle={`${filteredAttestations.length} registros`}
                         type="default"
                         icon={DollarSign}
                     />
                     <PendencyCard
                         title="Total Apontado"
-                        value={formatCurrency(totalMeasurement)}
+                        value={formatCompactCurrency(totalMeasurement)}
+                        fullValue={formatCurrency(totalMeasurement)}
                         subtitle="Métrica de medição base"
                         type="success"
                         icon={CheckCircle2}
                     />
                     <PendencyCard
                         title="Total GAP"
-                        value={formatCurrency(totalGap)}
+                        value={formatCompactCurrency(totalGap)}
+                        fullValue={formatCurrency(totalGap)}
                         subtitle={totalGap > 0 ? 'Diferença: Apontado - Faturado' : 'Sem GAPs no período'}
                         type={totalGap > 0 ? 'danger' : 'success'}
                         icon={AlertTriangle}
@@ -123,6 +135,7 @@ export default function AnalystDashboard() {
                     <PendencyCard
                         title="Clientes com GAP"
                         value={clientsWithPendency}
+                        fullValue={clientsWithPendency.toString()}
                         subtitle="Clientes únicos apresentando GAP"
                         type={clientsWithPendency > 0 ? 'warning' : 'success'}
                         icon={Users}
