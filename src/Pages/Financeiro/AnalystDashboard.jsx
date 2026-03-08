@@ -10,7 +10,7 @@ import AttestationDetailsDialog from "./components/AttestationDetailsDialog";
 
 export default function AnalystDashboard() {
     const user = JSON.parse(localStorage.getItem('fluxo_user') || localStorage.getItem('user') || '{}');
-    const analystName = user?.name;
+    const analystName = user?.full_name || user?.name;
 
     const currentDate = new Date();
     const currentYear = currentDate.getFullYear().toString();
