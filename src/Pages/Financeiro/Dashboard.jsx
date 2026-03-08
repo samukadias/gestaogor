@@ -24,7 +24,7 @@ export default function Dashboard() {
         pd: 'all',
         esp: 'all',
         year: currentYear,
-        month: currentMonth,
+        month: 'all',
         analyst: 'all'
     });
 
