@@ -19,7 +19,9 @@ export default function DashboardFilters({
             client: 'all',
             pd: 'all',
             esp: 'all',
-            month: 'all'
+            year: 'all',
+            month: 'all',
+            analyst: 'all'
         });
     };
 
