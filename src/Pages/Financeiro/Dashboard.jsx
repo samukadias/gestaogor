@@ -84,16 +84,22 @@ export default function Dashboard() {
 
     // Aplicar filtros
     const filteredAttestations = attestations.filter(att => {
-        if (filters.client !== 'all' && att.client_name !== filters.client) return false;
-        if (filters.pd !== 'all' && att.pd_number !== filters.pd) return false;
-        if (filters.esp !== 'all' && att.esp_number !== filters.esp) return false;
-        if (filters.analyst !== 'all' && att.responsible_analyst !== filters.analyst) return false;
+        const fClient = filters.client || 'all';
+        const fPd = filters.pd || 'all';
+        const fEsp = filters.esp || 'all';
+        const fAnalyst = filters.analyst || 'all';
+        const fYear = filters.year || 'all';
+        const fMonth = filters.month || 'all';
+
+        if (fClient !== 'all' && att.client_name !== fClient) return false;
+        if (fPd !== 'all' && att.pd_number !== fPd) return false;
+        if (fEsp !== 'all' && att.esp_number !== fEsp) return false;
+        if (fAnalyst !== 'all' && att.responsible_analyst !== fAnalyst) return false;
 
         if (att.reference_month) {
             const [attYear, attMonth] = att.reference_month.split('-');
-            if (filters.year !== 'all' && attYear !== filters.year) return false;
-            // O value do mês que vem do Select agora é apenas os dois dígitos (ex: "02")
-            if (filters.month !== 'all' && attMonth !== filters.month) return false;
+            if (fYear !== 'all' && attYear !== fYear) return false;
+            if (fMonth !== 'all' && attMonth !== fMonth) return false;
         }
 
         return true;
