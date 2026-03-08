@@ -23,8 +23,6 @@ export default function Search() {
     vencimento: "all",
     valorMin: "",
     valorMax: "",
-    valorMin: "",
-    valorMax: "",
     dataFimMin: "",
     dataFimMax: ""
   });
